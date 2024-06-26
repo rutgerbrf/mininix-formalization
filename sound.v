@@ -13,9 +13,8 @@ Lemma strong_value_stuck_rtc sv e:
   expr_from_strong_value sv -->* e →
   e = expr_from_strong_value sv.
 Proof.
-  intros. inv H.
-  - reflexivity.
-  - exfalso. apply strong_value_stuck with (sv := sv). by exists y.
+  intros. inv H; [done|].
+  exfalso. apply strong_value_stuck with (sv := sv). by exists y.
 Qed.
 
 Lemma force__strong_value (e : expr) (v : value) :
@@ -68,33 +67,32 @@ Lemma force_map_fmap_union_insert (sws : gmap string strong_value) es k e sv :
 Proof.
   intros [n Hsteps] % rtc_nsteps.
   revert sws es k e Hsteps.
-  induction n; intros sws es k e Hsteps.
-  - inv Hsteps.
-  - inv Hsteps.
-    inv H0.
-    inv H2.
-    + inv H3. inv H1.
-      * simplify_option_eq. unfold expr_from_strong_value, compose.
-        by rewrite H4.
-      * edestruct strong_value_stuck. exists y. done.
-    + inv H0. simplify_option_eq.
-      apply rtc_transitive
-      with (y := X_Force (X_V (V_Attrset (<[k:=E2 e2]> es ∪
-        (expr_from_strong_value <$> sws))))).
-      * do 2 rewrite <-insert_union_l.
-        apply rtc_once.
-        eapply E_Ctx
-        with (E := λ e, X_Force (X_V (V_Attrset (<[k := E2 e]>(es ∪
-          (expr_from_strong_value <$> sws)))))).
-        -- eapply IsCtx_Compose.
+  induction n; intros sws es k e Hsteps; [inv Hsteps|].
+  inv Hsteps.
+  inv H0.
+  inv H2.
+  - inv H3. inv H1.
+    + simplify_option_eq. unfold expr_from_strong_value, compose.
+      by rewrite H4.
+    + edestruct strong_value_stuck. exists y. done.
+  - inv H0. simplify_option_eq.
+    apply rtc_transitive
+    with (y := X_Force (X_V (V_Attrset (<[k:=E2 e2]> es ∪
+      (expr_from_strong_value <$> sws))))).
+    + do 2 rewrite <-insert_union_l.
+      apply rtc_once.
+      eapply E_Ctx
+      with (E := λ e, X_Force (X_V (V_Attrset (<[k := E2 e]>(es ∪
+        (expr_from_strong_value <$> sws)))))).
+      * eapply IsCtx_Compose.
+        -- constructor.
+        -- eapply IsCtx_Compose
+           with (E1 := (λ e, X_V (V_Attrset (<[k := e]>(es ∪
+             (expr_from_strong_value <$> sws)))))).
            ++ constructor.
-           ++ eapply IsCtx_Compose
-              with (E1 := (λ e, X_V (V_Attrset (<[k := e]>(es ∪
-                (expr_from_strong_value <$> sws)))))).
-              ** constructor.
-              ** done.
-        -- done.
-      * by apply IHn.
+           ++ done.
+      * done.
+    + by apply IHn.
 Qed.
 
 Lemma insert_union_fmap__union_fmap_insert {A B} (f : A → B) i x

@@ -64,32 +64,6 @@ Definition matches (m : matcher) (bs : gmap string expr) :
         snd <$> matches_aux ms bs
     end.
 
-(* Copied from stdpp and changed so that the value types
-   of m1 and m2 are decoupled *)
-Lemma dom_subseteq_size' `{FinMapDom K M D} {A B} (m1 : M A) (m2 : M B) :
-  dom m2 ⊆ dom m1 → size m2 ≤ size m1.
-Proof.
-  revert m1. induction m2 as [|i x m2 ? IH] using map_ind; intros m1 Hdom.
-  { rewrite map_size_empty. lia. }
-  rewrite dom_insert in Hdom.
-  assert (i ∉ dom m2) by (by apply not_elem_of_dom).
-  assert (i ∈ dom m1) as [x' Hx']%elem_of_dom by set_solver.
-  rewrite <-(insert_delete m1 i x') by done.
-  rewrite !map_size_insert_None, <-Nat.succ_le_mono
-  by (by rewrite ?lookup_delete).
-  apply IH. rewrite dom_delete. set_solver.
-Qed.
-
-Lemma dom_empty_subset `{Countable K} `{FinMapDom K M D} {A B} (m : M A) :
-  dom m ⊆ dom (∅ : M B) → m = ∅.
-Proof.
-  intros Hdom.
-  apply dom_subseteq_size' in Hdom.
-  rewrite map_size_empty in Hdom.
-  inv Hdom.
-  by apply map_size_empty_inv.
-Qed.
-
 Lemma matches_aux_empty bs : matches_aux ∅ bs = Some (bs, ∅).
 Proof. done. Qed.
 
@@ -496,8 +470,7 @@ Proof.
   revert strict bs brs Hmatches.
   induction ms using map_ind; intros strict bs brs Hmatches.
   - destruct strict; simplify_option_eq.
-    + apply dom_empty_subset in H0. simplify_eq.
-      constructor.
+    + apply map_dom_empty_subset in H0. simplify_eq. constructor.
     + constructor.
   - destruct x.
     + apply matches_step' in Hmatches as He.

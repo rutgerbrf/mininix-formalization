@@ -60,6 +60,12 @@ Instance Maybe_X_Attrset : Maybe X_Attrset := λ e,
   | _ => None
   end.
 
+Instance Maybe_X_V : Maybe X_V := λ e,
+  match e with
+  | X_V v => Some v
+  | _ => None
+  end.
+
 Instance Maybe_B_Nonrec : Maybe B_Nonrec := λ rhs,
   match rhs with
   | B_Nonrec e => Some e

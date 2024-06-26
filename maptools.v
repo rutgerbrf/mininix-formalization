@@ -4,8 +4,8 @@ From stdpp Require Import countable fin_maps fin_map_dom.
 (** Generic lemmas for finite maps and their domains *)
 
 Lemma map_insert_empty_lookup {A} `{FinMap K M}
-  (i j : K) (u v : A) :
-    <[i := u]> (∅ : M A) !! j = Some v → i = j ∧ v = u.
+  (i j : K) (x y : A) :
+    <[i := x]> (∅ : M A) !! j = Some y → i = j ∧ y = x.
 Proof.
   intros Hiel.
   destruct (decide (i = j)).
@@ -106,6 +106,32 @@ Lemma map_dom_insert_eq_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A}
     dom (delete i m1) = dom (delete i m2) ∧ i ∈ dom m2.
 Proof. set_solver. Qed.
 
+(* Copied from stdpp and changed so that the value types
+   of m1 and m2 are decoupled *)
+Lemma map_dom_subseteq_size `{FinMapDom K M D} {A B} (m1 : M A) (m2 : M B) :
+  dom m2 ⊆ dom m1 → size m2 ≤ size m1.
+Proof.
+  revert m1. induction m2 as [|i x m2 ? IH] using map_ind; intros m1 Hdom.
+  { rewrite map_size_empty. lia. }
+  rewrite dom_insert in Hdom.
+  assert (i ∉ dom m2) by (by apply not_elem_of_dom).
+  assert (i ∈ dom m1) as [x' Hx'] % elem_of_dom by set_solver.
+  rewrite <-(insert_delete m1 i x') by done.
+  rewrite !map_size_insert_None, <-Nat.succ_le_mono
+  by (by rewrite ?lookup_delete).
+  apply IH. rewrite dom_delete. set_solver.
+Qed.
+
+Lemma map_dom_empty_subset `{Countable K} `{FinMapDom K M D} {A B} (m : M A) :
+  dom m ⊆ dom (∅ : M B) → m = ∅.
+Proof.
+  intros Hdom.
+  apply map_dom_subseteq_size in Hdom.
+  rewrite map_size_empty in Hdom.
+  inv Hdom.
+  by apply map_size_empty_inv.
+Qed.
+
 (** map_mapM *)
 
 Definition map_mapM {M : Type → Type} `{MBind F} `{MRet F} `{FinMap K M} {A B}
@@ -137,11 +163,10 @@ Proof.
 Qed.
 
 Lemma map_mapM_option_insert_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A B}
-  (f : A → option B) (m1 : M A) (m2 m2' : M B)
-  (i : K) (x : A) (x' : B) :
-  m1 !! i = None →
-  map_mapM f (<[i := x]>m1) = Some m2 →
-  ∃ x', f x = Some x' ∧ map_mapM f m1 = Some (delete i m2).
+  (f : A → option B) (m1 : M A) (m2 m2' : M B) (i : K) (x : A) :
+    m1 !! i = None →
+    map_mapM f (<[i := x]>m1) = Some m2 →
+    ∃ x', f x = Some x' ∧ map_mapM f m1 = Some (delete i m2).
 Proof.
   intros Helem HmapM.
   unfold map_mapM in HmapM.
@@ -315,7 +340,7 @@ Qed.
 
 Lemma map_Forall2_impl_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A B}
   (R1 R2 : A → B → Prop) :
-    (∀ a b, R1 a b → R2 a b) →
+    (∀ x y, R1 x y → R2 x y) →
       ∀ (m1 : M A) (m2 : M B),
         map_Forall2 R1 m1 m2 → map_Forall2 R2 m1 m2.
 Proof.
@@ -327,8 +352,8 @@ Proof.
 Qed.
 
 Lemma map_Forall2_fmap_r_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A B C}
-  (P : A → C → Prop) (m1 : M A) (m2 : M B) (f : B → C) :
-    map_Forall2 P m1 (f <$> m2) → map_Forall2 (λ l r, P l (f r)) m1 m2.
+  (R : A → C → Prop) (m1 : M A) (m2 : M B) (f : B → C) :
+    map_Forall2 R m1 (f <$> m2) → map_Forall2 (λ x y, R x (f y)) m1 m2.
 Proof.
   intros HForall2.
   unfold map_Forall2, map_relation, option_relation in *.
@@ -355,10 +380,10 @@ Proof.
 Qed.
 
 Lemma map_insert_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A}
-  (i : K) (x1 x2 : A) (m1 m2 : M A) :
-    x1 = x2 →
+  (i : K) (x y : A) (m1 m2 : M A) :
+    x = y →
     delete i m1 = delete i m2 →
-    <[i := x1]>m1 = <[i := x2]>m2.
+    <[i := x]>m1 = <[i := y]>m2.
 Proof.
   intros Heq Hdel.
   apply map_Forall2_eq_L.
@@ -367,8 +392,8 @@ Proof.
 Qed.
 
 Lemma map_insert_rev_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A}
-  (i : K) (x1 x2 : A) (m1 m2 : M A) :
-    <[i := x1]>m1 = <[i := x2]>m2 → x1 = x2 ∧ delete i m1 = delete i m2.
+  (m1 m2 : M A) (i : K) (x y : A) :
+    <[i := x]>m1 = <[i := y]>m2 → x = y ∧ delete i m1 = delete i m2.
 Proof.
   intros Heq. apply map_Forall2_eq_L in Heq.
   apply map_Forall2_insert_inv in Heq as [Heq1 Heq2].
@@ -376,13 +401,13 @@ Proof.
 Qed.
 
 Lemma map_insert_rev_1_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A}
-  (i : K) (x1 x2 : A) (m1 m2 : M A) :
-    <[i := x1]>m1 = <[i := x2]>m2 → x1 = x2.
+  (m1 m2 : M A) (i : K) (x y : A) :
+    <[i := x]>m1 = <[i := y]>m2 → x = y.
 Proof. apply map_insert_rev_L. Qed.
 
 Lemma map_insert_rev_2_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A}
-  (i : K) (x1 x2 : A) (m1 m2 : M A) :
-    <[i := x1]>m1 = <[i := x2]>m2 → delete i m1 = delete i m2.
+  (m1 m2 : M A) (i : K) (x y : A) :
+    <[i := x]>m1 = <[i := y]>m2 → delete i m1 = delete i m2.
 Proof. apply map_insert_rev_L. Qed.
 
 Lemma map_Forall2_alt_L `{FinMapDom K M D} `{!LeibnizEquiv D} {A B}

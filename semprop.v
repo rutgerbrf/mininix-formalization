@@ -77,173 +77,36 @@ Proof.
     intros b11 b12 b21 b22 E2 Hbase1 Hbase2 Hctx2 H2; inv Hctx2.
   - (* L: id, R: id *) left. by eapply base_step_deterministic.
   - (* L: id, R: ∘ *) simplify_eq/=.
-    inv H.
-    + inv Hbase1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H1. inv H.
-    + inv Hbase1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H.
-    + inv Hbase1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H1.
-    + inv Hbase1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H1. inv H.
-    + inv Hbase1.
-      inv H0.
-      * inv Hbase2.
-      * inv H.
-    + inv Hbase1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H.
-    + inv Hbase1.
-      inv H0.
-      * inv Hbase2.
-      * inv H.
-    + inv Hbase1.
-      inv H0.
-      * inv Hbase2.
-      * inv H.
-    + inv Hbase1.
-      inv H0.
-      * inv Hbase2.
-      * inv H.
-    + inv Hbase1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H1.
-      * inv H0.
-        -- inv Hbase2.
-        -- inv H1.
-    + inv Hbase1.
-      inv H0.
-      * inv Hbase2.
-      * inv H.
-        simplify_option_eq.
-        destruct sv; try discriminate.
-        exfalso. clear uf. simplify_option_eq.
-        apply fmap_insert_lookup in H1. simplify_option_eq.
-        revert bs0 x H H1 Heqo.
-        induction H2; intros bs0 x H' H1 Heqo.
-        -- inv Hbase2.
-        -- simplify_option_eq.
-           inv H. destruct H'; try discriminate.
-           inv H1. apply fmap_insert_lookup in H0. simplify_option_eq.
-           by eapply IHis_ctx.
-    + inv Hbase1.
-  - (* L: ∘, R: id *)
-    simplify_eq/=.
-    inv H.
-    + inv Hbase2.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H0. inv H.
-    + inv Hbase2.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H.
-    + inv Hbase2.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H0.
-    + inv Hbase2.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H0.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H0. inv H.
-    + inv Hbase2.
-      inv Hctx1.
-      * inv Hbase1.
-      * inv H.
-    + inv Hbase2.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H.
-    + inv Hbase2.
-      inv Hctx1.
-      * inv Hbase1.
-      * inv H.
-    + inv Hbase2.
-      inv Hctx1.
-      * inv Hbase1.
-      * inv H.
-    + inv Hbase2.
-      inv Hctx1.
-      * inv Hbase1.
-      * inv H.
-    + inv Hbase2.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H0.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H0.
-      * inv Hctx1.
-        -- inv Hbase1.
-        -- inv H0.
-    + inv Hbase2.
-      inv Hctx1.
-      * inv Hbase1.
-      * clear IHHctx1.
-        inv H.
-        simplify_option_eq.
-        destruct sv; try discriminate.
-        exfalso. simplify_option_eq.
-        apply fmap_insert_lookup in H0. simplify_option_eq.
-        revert bs0 x H H0 Heqo.
-        induction H1; intros bs0 x H' H0 Heqo.
-        -- inv Hbase1.
-        -- simplify_option_eq.
-           inv H. destruct H'; try discriminate.
-           inv H0. apply fmap_insert_lookup in H2. simplify_option_eq.
-           eapply IHis_ctx.
-           ++ apply H2.
-           ++ apply Heqo0.
-    + inv Hbase2.
+    inv H; try inv select (_ -->base b12);
+      (inv select (is_ctx _ _ _);
+         [inv select (b21 -->base b22)
+         |inv select (is_ctx_item _ _ _)]).
+    simplify_option_eq.
+    destruct sv; try discriminate.
+    exfalso. clear uf. simplify_option_eq.
+    apply fmap_insert_lookup in H1. simplify_option_eq.
+    revert bs0 x H H1 Heqo.
+    induction H2; intros bs0 x H' H1 Heqo; [inv Hbase2|].
+    simplify_option_eq.
+    inv H. destruct H'; try discriminate.
+    inv H1. apply fmap_insert_lookup in H0. simplify_option_eq.
+    by eapply IHis_ctx.
+  - (* L: ∘, R: id *) simplify_eq/=.
+    inv H; try inv select (_ -->base b22);
+      (inv select (is_ctx _ _ _);
+         [inv select (b11 -->base b12)
+         |inv select (is_ctx_item _ _ _)]).
+    clear IHHctx1.
+    simplify_option_eq.
+    destruct sv; try discriminate.
+    exfalso. simplify_option_eq.
+    apply fmap_insert_lookup in H0. simplify_option_eq.
+    revert bs0 x H H0 Heqo.
+    induction H1; intros bs0 x H' H0 Heqo; [inv Hbase1|].
+    simplify_option_eq.
+    inv H. destruct H'; try discriminate.
+    inv H0. apply fmap_insert_lookup in H2. simplify_option_eq.
+    by eapply IHis_ctx.
   - (* L: ∘, R: ∘ *)
     simplify_option_eq.
     inv H; inv H0.

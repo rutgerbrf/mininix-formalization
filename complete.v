@@ -34,36 +34,34 @@ Proof.
   induction v using strong_value_ind'; try by exists 2.
   unfold expr_from_strong_value. simpl.
   fold expr_from_strong_value.
-  induction bs using map_ind.
-  + by exists 2.
-  + apply map_Forall_insert in H as [[n Hn] H2]; try done.
-    apply IHbs in H2 as [o Ho]. clear IHbs.
-    exists (S (n `max` o)).
-    rewrite eval_S. csimpl.
-    setoid_rewrite map_mapM_Some_2_L
-    with (m2 := value_from_strong_value <$> <[i := x]>m); csimpl.
-    * by rewrite <-map_fmap_compose.
-    * destruct o as [|o]; csimpl in *; try discriminate.
-      apply map_Forall2_alt_L.
-      split.
-      -- set_solver.
-      -- intros j u v ??. rewrite eval_S in Ho.
-         apply bind_Some in Ho as [vs [Ho1 Ho2]].
-         setoid_rewrite map_mapM_Some_L in Ho1. simplify_eq.
-         unfold expr_from_strong_value in Ho2.
-         rewrite map_fmap_compose in Ho2.
-         simplify_eq.
-         destruct (decide (i = j)).
-         ++ simplify_eq.
-            repeat rewrite lookup_fmap, lookup_insert in *.
-            simplify_eq/=.
-            apply eval_le with (n := n); lia || done.
-         ++ repeat rewrite lookup_fmap, lookup_insert_ne in * by done.
-            repeat rewrite <-lookup_fmap in *.
-            apply map_Forall2_alt_L in Ho1.
-            destruct Ho1 as [Ho1 Ho2].
-            apply eval_le with (n := o); try lia.
-            by apply Ho2 with (i := j).
+  induction bs using map_ind; [by exists 2|].
+  apply map_Forall_insert in H as [[n Hn] H2]; try done.
+  apply IHbs in H2 as [o Ho]. clear IHbs.
+  exists (S (n `max` o)).
+  rewrite eval_S. csimpl.
+  setoid_rewrite map_mapM_Some_2_L
+  with (m2 := value_from_strong_value <$> <[i := x]>m);
+    csimpl; [by rewrite <-map_fmap_compose|].
+  destruct o as [|o]; csimpl in *; try discriminate.
+  apply map_Forall2_alt_L.
+  split; [set_solver|].
+  intros j u v ??. rewrite eval_S in Ho.
+  apply bind_Some in Ho as [vs [Ho1 Ho2]].
+  setoid_rewrite map_mapM_Some_L in Ho1. simplify_eq.
+  unfold expr_from_strong_value in Ho2.
+  rewrite map_fmap_compose in Ho2.
+  simplify_eq.
+  destruct (decide (i = j)).
+  - simplify_eq.
+    repeat rewrite lookup_fmap, lookup_insert in *.
+    simplify_eq/=.
+    apply eval_le with (n := n); lia || done.
+  - repeat rewrite lookup_fmap, lookup_insert_ne in * by done.
+    repeat rewrite <-lookup_fmap in *.
+    apply map_Forall2_alt_L in Ho1.
+    destruct Ho1 as [Ho1 Ho2].
+    apply eval_le with (n := o); try lia.
+    by apply Ho2 with (i := j).
 Qed.
 
 Lemma eval_force_strong_value' v :

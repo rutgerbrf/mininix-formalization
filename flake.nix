@@ -12,7 +12,6 @@
       {
         devShells.default = with pkgs; mkShell {
           buildInputs = [
-            coqPackages.coqide
             coqPackages.stdpp
             coq
           ];

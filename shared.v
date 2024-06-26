@@ -14,12 +14,11 @@ Definition nonrecs : gmap string b_rhs → gmap string expr :=
 
 Lemma nonrecs_nonrec_fmap bs : nonrecs (B_Nonrec <$> bs) = bs.
 Proof.
-  induction bs using map_ind.
-  - done.
-  - unfold nonrecs.
-    rewrite fmap_insert.
-    rewrite omap_insert_Some with (y := x); try done.
-    by f_equal.
+  induction bs using map_ind; [done|].
+  unfold nonrecs.
+  rewrite fmap_insert.
+  rewrite omap_insert_Some with (y := x); try done.
+  by f_equal.
 Qed.
 
 Lemma rec_subst_nonrec_fmap bs : rec_subst (B_Nonrec <$> bs) = bs.
