@@ -9,7 +9,7 @@ Lemma map_insert_empty_lookup {A} `{FinMap K M}
 Proof.
   intros Hiel.
   destruct (decide (i = j)).
-  - split; try done. simplify_eq /=.
+  - split; try done. simplify_eq/=.
     rewrite lookup_insert in Hiel. congruence.
   - rewrite lookup_insert_ne in Hiel; try done.
     exfalso. eapply lookup_empty_Some, Hiel.
@@ -259,7 +259,7 @@ Proof.
   case_match.
   - case_match; try done.
     rewrite lookup_insert in H8. rewrite lookup_insert in H9.
-    simplify_eq /=. split; try done.
+    simplify_eq/=. split; try done.
     unfold map_Forall2, map_relation, option_relation.
     intros j.
     destruct (decide (i = j)).
@@ -275,7 +275,7 @@ Proof.
         case_match; case_match; try done;
           rewrite lookup_insert_ne in H11 by done;
           rewrite lookup_insert_ne in H12 by done;
-          by simplify_eq /=.
+          by simplify_eq/=.
   - by rewrite lookup_insert in H8.
 Qed.
 
@@ -305,7 +305,7 @@ Proof.
     pose proof (HForall2 i). by rewrite lookup_empty, lookup_insert in H15.
   - intros HForall2.
     apply map_Forall2_destruct in HForall2 as Hm2.
-    destruct Hm2 as [y [m2' [Hm21 Hm22]]]. simplify_eq /=.
+    destruct Hm2 as [y [m2' [Hm21 Hm22]]]. simplify_eq/=.
     apply map_Forall2_insert_inv_strict in HForall2 as [_ HForall2]; try done.
     set_solver.
 Qed.

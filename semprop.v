@@ -42,7 +42,7 @@ Proof.
   - exfalso. apply H. by exists bs.
   - f_equal. by eapply matches_deterministic.
   - apply map_insert_inv in H0 as [H01 H02].
-    by simplify_eq /=.
+    by simplify_eq/=.
   - f_equal. by eapply binop_deterministic.
   - rewrite H4 in H. by apply is_Some_None in H.
   - exfalso. apply H4. by exists bs.
