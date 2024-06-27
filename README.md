@@ -2,12 +2,15 @@ Coq Formalization for Mininix
 =============================
 
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12208115.svg)](https://doi.org/10.5281/zenodo.12208115)
 
-Mininix is a smaller version of the Nix expression language. This repository
+Mininix is a smaller version of the Nix expression language. This codebase
 provides the mechanization of the semantics and reference interpreter for this
 language in the [Coq](https://coq.inria.fr/) proof assistant. For more details,
-I refer to my bachelor' thesis. I will link to it when it is made available on
-the [thesis archive](https://www.cs.ru.nl/bachelors-theses/) page of
+I refer to my bachelor's thesis. It should be linked to from the related work
+section of the [Zenodo record](https://zenodo.org/records/12208115) after it
+has been made available on the [thesis
+archive](https://www.cs.ru.nl/bachelors-theses/) page of
 [iCIS](https://www.ru.nl/en/institute-for-computing-and-information-sciences).
 
 ## Development
