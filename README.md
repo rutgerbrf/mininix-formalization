@@ -16,6 +16,12 @@ During my thesis, I used Nix to manage the Coq installation for this thesis.
 If you use Nix, it should be easy to build/check the codebase. If not, this
 might be a bit more tricky.
 
+There are two things that you need to have installed. The current `flake.lock`
+ensures that we have the following software:
+
+- Coq, version 8.19.2.
+- [Coq-std++](https://gitlab.mpi-sws.org/iris/stdpp), version 1.10.0.
+
 ### Using Nix
 
 I have attached a `flake.nix` and `flake.lock` file, which should make my setup
@@ -23,16 +29,16 @@ reproducible. Assuming a working Nix installation with flake support and the
 Nix command enabled, simply running `nix develop` followed by `make` should run
 `coqc` on all files. If you have a working [direnv](https://direnv.net/)
 installation, simply running `direnv allow` (after inspecting the `.envrc`
-file) should make the right version of Coq available.
+file) should make the right version of Coq and Coq-std++ available.
 
 ### Without Nix
 
-There are two things you need to have available. The current `flake.lock`
-ensures that we have the following software:
+If you are on some Unix-based system, there is a good chance that your package
+manager provides a Coq package. [The Repology
+page](https://repology.org/project/coq/versions) should give you the
+information that you need.
 
-- Coq, version 8.19.2.
-- [Coq-std++](https://gitlab.mpi-sws.org/iris/stdpp), version 1.10.0.
-  You may be able to install Coq-std++ via opam, as described in the README of
-  Coq-std++. However, your operating system's package repositories may also
-  provide a package. Consider taking a look at [the Repology
-  page](https://repology.org/project/coq-stdpp/packages).
+You may be able to install Coq-std++ via opam, as described in the README of
+Coq-std++. However, your operating system's package repositories may also
+provide a package. Consider taking a look at [the Repology
+page](https://repology.org/project/coq-stdpp/versions).
