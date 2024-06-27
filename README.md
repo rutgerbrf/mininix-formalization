@@ -40,5 +40,6 @@ information that you need.
 
 You may be able to install Coq-std++ via opam, as described in the README of
 Coq-std++. However, your operating system's package repositories may also
-provide a package. Consider taking a look at [the Repology
-page](https://repology.org/project/coq-stdpp/versions).
+provide a package. Consider taking a look at the Repology pages:
+[coq-stdpp](https://repology.org/project/coq-stdpp/versions),
+[coq:stdpp](https://repology.org/project/coq:stdpp/versions).
