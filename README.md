@@ -12,9 +12,9 @@ the [thesis archive](https://www.cs.ru.nl/bachelors-theses/) page of
 
 ## Development
 
-During my thesis, I used Nix to manage the Coq installation for this thesis.
-If you use Nix, it should be easy to build/check the codebase. If not, this
-might be a bit more tricky.
+During my thesis, I used Nix to manage my Coq installation. If you use Nix, it
+should be easy to build/check the codebase. If not, this might be a bit more
+tricky.
 
 There are two things that you need to have installed. The current `flake.lock`
 ensures that we have the following software:
@@ -26,10 +26,12 @@ ensures that we have the following software:
 
 I have attached a `flake.nix` and `flake.lock` file, which should make my setup
 reproducible. Assuming a working Nix installation with flake support and the
-Nix command enabled, simply running `nix develop` followed by `make` should run
-`coqc` on all files. If you have a working [direnv](https://direnv.net/)
-installation, simply running `direnv allow` (after inspecting the `.envrc`
-file) should make the right version of Coq and Coq-std++ available.
+Nix command enabled, simply running `nix develop` should give you a shell where
+the right Coq and Coq-std++ versions available.
+
+If you have a working [direnv](https://direnv.net/) installation, simply
+running `direnv allow` (after inspecting the `.envrc` file) should make the
+right version of Coq and Coq-std++ available.
 
 ### Without Nix
 
@@ -43,3 +45,8 @@ Coq-std++. However, your operating system's package repositories may also
 provide a package. Consider taking a look at the Repology pages:
 [coq-stdpp](https://repology.org/project/coq-stdpp/versions),
 [coq:stdpp](https://repology.org/project/coq:stdpp/versions).
+
+## Building/checking
+
+Running `make` should run `coqc` on all files; assuming that you are using a
+compatible Coq version, this should successfully check all proofs.
