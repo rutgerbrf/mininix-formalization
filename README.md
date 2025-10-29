@@ -4,6 +4,9 @@ Coq Formalization for Mininix
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12208115.svg)](https://doi.org/10.5281/zenodo.12208115)
 
+> __N.B.__: this is *not* the artifact for the much more extensive 2025 paper "Verified Interpreters for Dynamic Languages with Applications to the Nix Expression Language".
+> For that, please see https://gitlab.science.ru.nl/pl/verified-dyn-lang-interp.
+
 Mininix is a smaller version of the Nix expression language. This codebase
 provides the mechanization of the semantics and reference interpreter for this
 language in the [Coq](https://coq.inria.fr/) proof assistant. For more details,
